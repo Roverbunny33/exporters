@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -70,7 +70,7 @@
           BABYLON.Tools.ToRadians(70),
           12,
           new BABYLON.Vector3(0, 2.5, 0),
-          scene
+          scene,
         );
         camera.attachControl(canvas, true);
         camera.lowerRadiusLimit = 6;
@@ -90,7 +90,7 @@
         const light = new BABYLON.DirectionalLight(
           "sun",
           new BABYLON.Vector3(-0.6, -1, -0.8),
-          scene
+          scene,
         );
         light.position = new BABYLON.Vector3(10, 20, 10);
         light.intensity = 1.2;
@@ -100,21 +100,24 @@
         await BABYLON.SceneLoader.AppendAsync(
           "https://assets.babylonjs.com/meshes/",
           "HVGirl.glb",
-          scene
+          scene,
         );
 
         scene.meshes.forEach((mesh) => {
-          if (mesh.name !== "BackgroundSkybox" && mesh.receiveShadows !== undefined) {
+          if (
+            mesh.name !== "BackgroundSkybox" &&
+            mesh.receiveShadows !== undefined
+          ) {
             shadowGenerator.addShadowCaster(mesh);
             mesh.receiveShadows = true;
           }
         });
 
-        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
-          "ui"
-        );
+        const advancedTexture =
+          BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ui");
         const panel = new BABYLON.GUI.StackPanel();
-        panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        panel.horizontalAlignment =
+          BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
         panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
         panel.width = "220px";
         panel.isVertical = true;
@@ -123,7 +126,10 @@
         advancedTexture.addControl(panel);
 
         const makeButton = (label, group) => {
-          const button = BABYLON.GUI.Button.CreateSimpleButton("btn" + label, label);
+          const button = BABYLON.GUI.Button.CreateSimpleButton(
+            "btn" + label,
+            label,
+          );
           button.height = "50px";
           button.color = "white";
           button.background = "#4557ff";

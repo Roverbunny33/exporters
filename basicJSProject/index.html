@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -8,7 +8,8 @@
       :root {
         color-scheme: dark;
         --bg: #05040f;
-        --bg-accent: radial-gradient(circle at top right, #2c3bff40, transparent 55%),
+        --bg-accent:
+          radial-gradient(circle at top right, #2c3bff40, transparent 55%),
           radial-gradient(circle at 20% 40%, #ff3ca640, transparent 60%);
         --card-bg: rgba(17, 18, 30, 0.85);
         --text: #f3f4ff;
@@ -24,7 +25,12 @@
       body {
         margin: 0;
         min-height: 100vh;
-        font-family: "SF Pro Display", "Segoe UI", system-ui, -apple-system, sans-serif;
+        font-family:
+          "SF Pro Display",
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
         background: var(--bg);
         color: var(--text);
         position: relative;
@@ -113,11 +119,17 @@
         font-weight: 600;
         font-size: 1rem;
         text-decoration: none;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
       }
 
       .cta.primary {
-        background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+        background: linear-gradient(
+          120deg,
+          var(--accent),
+          var(--accent-strong)
+        );
         color: var(--text);
         box-shadow: 0 20px 45px rgba(108, 140, 255, 0.35);
       }
@@ -138,7 +150,11 @@
         min-height: 360px;
         border-radius: 32px;
         overflow: hidden;
-        background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.6));
+        background: linear-gradient(
+          160deg,
+          rgba(255, 255, 255, 0.05),
+          rgba(0, 0, 0, 0.6)
+        );
         box-shadow: 0 40px 90px rgba(0, 0, 0, 0.45);
       }
 
@@ -147,7 +163,11 @@
         position: absolute;
         inset: 1px;
         border-radius: inherit;
-        background: linear-gradient(160deg, rgba(79, 111, 255, 0.25), rgba(255, 99, 173, 0.15));
+        background: linear-gradient(
+          160deg,
+          rgba(79, 111, 255, 0.25),
+          rgba(255, 99, 173, 0.15)
+        );
         filter: blur(0.25px);
       }
 
@@ -242,12 +262,12 @@
         <div class="hero-copy">
           <span class="pill">Now available on Safari</span>
           <h1>
-            Switch from consuming to creating with 3D Creator.
+            Switch from consuming to creating with 3D Creator, a block-based
+            builder that lets you prototype immersive scenes directly in Safari.
           </h1>
           <p>
-            Build immersive, interactive scenes with a block-based builder designed
-            for the browser. Prototype, iterate, and publish directly in Safari
-            without installing a single app.
+            Drag, drop, and orchestrate lighting, interactions, and publishing
+            in a native browser workflow built for Apple devices.
           </p>
           <div class="cta-group">
             <a class="cta primary" href="example.html">Launch live demo</a>
@@ -263,8 +283,8 @@
         <article class="feature-card">
           <h3>Block-based authoring</h3>
           <p>
-            Compose scenes using intuitive blocks that wire lighting, physics, and
-            animation together as you snap them into place.
+            Compose scenes using intuitive blocks that wire lighting, physics,
+            and animation together as you snap them into place.
           </p>
         </article>
         <article class="feature-card">
@@ -284,13 +304,15 @@
         <article class="feature-card" id="workflow">
           <h3>Guided workflow</h3>
           <p>
-            Start with curated templates, explore best practices, and graduate to
-            advanced scripting without leaving the browser.
+            Start with curated templates, explore best practices, and graduate
+            to advanced scripting without leaving the browser.
           </p>
         </article>
       </section>
     </main>
-    <footer>© 2024 3D Creator. Prototype immersive ideas from any Safari tab.</footer>
+    <footer>
+      © 2024 3D Creator. Prototype immersive ideas from any Safari tab.
+    </footer>
 
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script>
@@ -309,7 +331,7 @@
           BABYLON.Tools.ToRadians(65),
           6,
           new BABYLON.Vector3(0, 1.2, 0),
-          scene
+          scene,
         );
         camera.attachControl(canvas, true);
         camera.lowerRadiusLimit = 4;
@@ -319,14 +341,14 @@
         const light = new BABYLON.HemisphericLight(
           "light",
           new BABYLON.Vector3(0.4, 1, 0.6),
-          scene
+          scene,
         );
         light.intensity = 1.2;
 
         const pointLight = new BABYLON.PointLight(
           "pointLight",
           new BABYLON.Vector3(-2, 3, -2),
-          scene
+          scene,
         );
         pointLight.diffuse = new BABYLON.Color3(0.7, 0.6, 1);
         pointLight.intensity = 0.9;
@@ -334,7 +356,7 @@
         const ground = BABYLON.MeshBuilder.CreateGround(
           "ground",
           { width: 10, height: 10 },
-          scene
+          scene,
         );
         ground.position.y = -0.75;
         ground.receiveShadows = true;
@@ -350,18 +372,30 @@
         const foundation = BABYLON.MeshBuilder.CreateBox(
           "foundation",
           { width: 3.6, height: 0.3, depth: 3.6 },
-          scene
+          scene,
         );
-        foundation.material = new BABYLON.StandardMaterial("foundationMat", scene);
+        foundation.material = new BABYLON.StandardMaterial(
+          "foundationMat",
+          scene,
+        );
         foundation.material.diffuseColor = new BABYLON.Color3(0.13, 0.15, 0.25);
-        foundation.material.emissiveColor = new BABYLON.Color3(0.05, 0.07, 0.18);
+        foundation.material.emissiveColor = new BABYLON.Color3(
+          0.05,
+          0.07,
+          0.18,
+        );
         foundation.position.y = -0.6;
         shadowGenerator.addShadowCaster(foundation);
 
         const tower = BABYLON.MeshBuilder.CreateCylinder(
           "tower",
-          { diameterTop: 0.9, diameterBottom: 1.3, height: 2.6, tessellation: 32 },
-          scene
+          {
+            diameterTop: 0.9,
+            diameterBottom: 1.3,
+            height: 2.6,
+            tessellation: 32,
+          },
+          scene,
         );
         tower.position.y = 1.1;
         const towerMat = new BABYLON.StandardMaterial("towerMat", scene);
@@ -373,7 +407,7 @@
         const halo = BABYLON.MeshBuilder.CreateTorus(
           "halo",
           { diameter: 2.4, thickness: 0.2, tessellation: 48 },
-          scene
+          scene,
         );
         halo.position.y = 1.6;
         const haloMat = new BABYLON.StandardMaterial("haloMat", scene);
@@ -385,7 +419,7 @@
         const orb = BABYLON.MeshBuilder.CreateSphere(
           "orb",
           { diameter: 0.8, segments: 32 },
-          scene
+          scene,
         );
         orb.position = new BABYLON.Vector3(0, 2.35, 0);
         const orbMat = new BABYLON.StandardMaterial("orbMat", scene);
