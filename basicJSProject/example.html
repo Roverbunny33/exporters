@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Babylon.js Loader + GUI Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: radial-gradient(circle at top, #1f2340, #0f1025 65%);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: #f5f5fa;
+      }
+
+      #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+        display: block;
+      }
+
+      .info {
+        position: absolute;
+        bottom: 1.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(13, 15, 25, 0.85);
+        border: 1px solid rgba(138, 180, 248, 0.35);
+        padding: 1rem 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.35);
+      }
+
+      .info strong {
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        color: #8ab4f8;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="renderCanvas"></canvas>
+    <div class="info">
+      <strong>Loader + GUI Showcase</strong>
+      <div>Drag with the mouse or tap to orbit the camera.</div>
+    </div>
+
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/babylonjs.loaders.min.js"></script>
+    <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script>
+      const canvas = document.getElementById("renderCanvas");
+      const engine = new BABYLON.Engine(canvas, true, {
+        adaptToDeviceRatio: true,
+      });
+
+      const createScene = async function () {
+        const scene = new BABYLON.Scene(engine);
+        scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
+
+        const camera = new BABYLON.ArcRotateCamera(
+          "camera",
+          BABYLON.Tools.ToRadians(135),
+          BABYLON.Tools.ToRadians(70),
+          12,
+          new BABYLON.Vector3(0, 2.5, 0),
+          scene,
+        );
+        camera.attachControl(canvas, true);
+        camera.lowerRadiusLimit = 6;
+        camera.upperRadiusLimit = 16;
+        camera.wheelDeltaPercentage = 0.01;
+
+        const environment = scene.createDefaultEnvironment({
+          enableGroundShadow: true,
+          createSkybox: true,
+          skyboxSize: 150,
+        });
+        if (environment && environment.ground) {
+          environment.ground.position.y = 0;
+          environment.ground.receiveShadows = true;
+        }
+
+        const light = new BABYLON.DirectionalLight(
+          "sun",
+          new BABYLON.Vector3(-0.6, -1, -0.8),
+          scene,
+        );
+        light.position = new BABYLON.Vector3(10, 20, 10);
+        light.intensity = 1.2;
+        const shadowGenerator = new BABYLON.ShadowGenerator(2048, light);
+        shadowGenerator.useContactHardeningShadow = true;
+
+        await BABYLON.SceneLoader.AppendAsync(
+          "https://assets.babylonjs.com/meshes/",
+          "HVGirl.glb",
+          scene,
+        );
+
+        scene.meshes.forEach((mesh) => {
+          if (
+            mesh.name !== "BackgroundSkybox" &&
+            mesh.receiveShadows !== undefined
+          ) {
+            shadowGenerator.addShadowCaster(mesh);
+            mesh.receiveShadows = true;
+          }
+        });
+
+        const advancedTexture =
+          BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ui");
+        const panel = new BABYLON.GUI.StackPanel();
+        panel.horizontalAlignment =
+          BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        panel.width = "220px";
+        panel.isVertical = true;
+        panel.paddingRight = "30px";
+        panel.spacing = 12;
+        advancedTexture.addControl(panel);
+
+        const makeButton = (label, group) => {
+          const button = BABYLON.GUI.Button.CreateSimpleButton(
+            "btn" + label,
+            label,
+          );
+          button.height = "50px";
+          button.color = "white";
+          button.background = "#4557ff";
+          button.thickness = 0;
+          button.alpha = 0.9;
+          button.cornerRadius = 12;
+          button.fontSize = 18;
+          button.onPointerUpObservable.add(() => {
+            scene.stopAllAnimations();
+            group.start(true, 1.0, group.from, group.to, false);
+          });
+          return button;
+        };
+
+        scene.animationGroups.forEach((group) => {
+          if (group.name) {
+            panel.addControl(makeButton(group.name, group));
+          }
+        });
+
+        return scene;
+      };
+
+      createScene().then((scene) => {
+        engine.runRenderLoop(() => {
+          scene.render();
+        });
+      });
+
+      window.addEventListener("resize", () => {
+        engine.resize();
+      });
+    </script>
+  </body>
+</html>

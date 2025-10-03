@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>3D Creator — Build Immersive Scenes in Safari</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #05040f;
+        --bg-accent:
+          radial-gradient(circle at top right, #2c3bff40, transparent 55%),
+          radial-gradient(circle at 20% 40%, #ff3ca640, transparent 60%);
+        --card-bg: rgba(17, 18, 30, 0.85);
+        --text: #f3f4ff;
+        --muted: #a7acd9;
+        --accent: #6c8cff;
+        --accent-strong: #9c6cff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family:
+          "SF Pro Display",
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--bg-accent);
+        opacity: 0.65;
+        pointer-events: none;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: clamp(1.75rem, 3vw, 3rem) clamp(1.5rem, 5vw, 5rem);
+        position: relative;
+        z-index: 1;
+      }
+
+      .logo {
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      nav {
+        display: flex;
+        gap: 1.5rem;
+        font-size: 0.95rem;
+      }
+
+      nav a {
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      nav a:hover {
+        color: var(--text);
+      }
+
+      main {
+        position: relative;
+        z-index: 1;
+        padding: 0 clamp(1.5rem, 5vw, 5rem) clamp(4rem, 8vw, 8rem);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: clamp(2rem, 5vw, 4rem);
+        align-items: center;
+        padding-top: clamp(2rem, 6vw, 7rem);
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(2.75rem, 4vw + 1rem, 4.5rem);
+        line-height: 1.05;
+        margin: 0 0 1rem;
+      }
+
+      .hero-copy p {
+        max-width: 32ch;
+        font-size: 1.1rem;
+        color: var(--muted);
+      }
+
+      .cta-group {
+        margin-top: 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.9rem 1.8rem;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .cta.primary {
+        background: linear-gradient(
+          120deg,
+          var(--accent),
+          var(--accent-strong)
+        );
+        color: var(--text);
+        box-shadow: 0 20px 45px rgba(108, 140, 255, 0.35);
+      }
+
+      .cta.secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .cta:hover {
+        transform: translateY(-2px);
+      }
+
+      .hero-visual {
+        position: relative;
+        isolation: isolate;
+        min-height: 360px;
+        border-radius: 32px;
+        overflow: hidden;
+        background: linear-gradient(
+          160deg,
+          rgba(255, 255, 255, 0.05),
+          rgba(0, 0, 0, 0.6)
+        );
+        box-shadow: 0 40px 90px rgba(0, 0, 0, 0.45);
+      }
+
+      .hero-visual::before {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        border-radius: inherit;
+        background: linear-gradient(
+          160deg,
+          rgba(79, 111, 255, 0.25),
+          rgba(255, 99, 173, 0.15)
+        );
+        filter: blur(0.25px);
+      }
+
+      .hero-visual canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.35rem 0.85rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--muted);
+      }
+
+      .features {
+        margin-top: clamp(4rem, 10vw, 8rem);
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: clamp(1.5rem, 4vw, 2.5rem);
+      }
+
+      .feature-card {
+        background: var(--card-bg);
+        padding: 1.75rem;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+      }
+
+      .feature-card h3 {
+        margin: 0 0 0.75rem;
+        font-size: 1.15rem;
+      }
+
+      .feature-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      footer {
+        margin-top: clamp(4rem, 10vw, 8rem);
+        padding: clamp(1.5rem, 5vw, 4rem);
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 0.85rem;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      @media (max-width: 720px) {
+        nav {
+          display: none;
+        }
+
+        header {
+          padding-bottom: 0;
+        }
+
+        .hero {
+          padding-top: 2rem;
+        }
+
+        .hero-copy h1 {
+          font-size: clamp(2.25rem, 8vw, 3.4rem);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <span class="logo">3D Creator</span>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#workflow">Workflow</a>
+        <a href="example.html">Live Demo</a>
+      </nav>
+    </header>
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="pill">Now available on Safari</span>
+          <h1>
+            Switch from consuming to creating with 3D Creator, a block-based
+            builder that lets you prototype immersive scenes directly in Safari.
+          </h1>
+          <p>
+            Drag, drop, and orchestrate lighting, interactions, and publishing
+            in a native browser workflow built for Apple devices.
+          </p>
+          <div class="cta-group">
+            <a class="cta primary" href="example.html">Launch live demo</a>
+            <a class="cta secondary" href="#workflow">See how it works</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <canvas id="renderCanvas"></canvas>
+        </div>
+      </section>
+
+      <section id="features" class="features">
+        <article class="feature-card">
+          <h3>Block-based authoring</h3>
+          <p>
+            Compose scenes using intuitive blocks that wire lighting, physics,
+            and animation together as you snap them into place.
+          </p>
+        </article>
+        <article class="feature-card">
+          <h3>Safari-first performance</h3>
+          <p>
+            Harness Metal-accelerated rendering on Apple silicon with zero setup
+            and instant reloads as you iterate.
+          </p>
+        </article>
+        <article class="feature-card">
+          <h3>One-click publishing</h3>
+          <p>
+            Share interactive previews with teammates or export production-ready
+            Babylon.js scenes directly to your workflow.
+          </p>
+        </article>
+        <article class="feature-card" id="workflow">
+          <h3>Guided workflow</h3>
+          <p>
+            Start with curated templates, explore best practices, and graduate
+            to advanced scripting without leaving the browser.
+          </p>
+        </article>
+      </section>
+    </main>
+    <footer>
+      © 2024 3D Creator. Prototype immersive ideas from any Safari tab.
+    </footer>
+
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script>
+      const canvas = document.getElementById("renderCanvas");
+      const engine = new BABYLON.Engine(canvas, true, {
+        adaptToDeviceRatio: true,
+      });
+
+      const createScene = function () {
+        const scene = new BABYLON.Scene(engine);
+        scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+
+        const camera = new BABYLON.ArcRotateCamera(
+          "camera",
+          BABYLON.Tools.ToRadians(140),
+          BABYLON.Tools.ToRadians(65),
+          6,
+          new BABYLON.Vector3(0, 1.2, 0),
+          scene,
+        );
+        camera.attachControl(canvas, true);
+        camera.lowerRadiusLimit = 4;
+        camera.upperRadiusLimit = 8;
+        camera.panningSensibility = 0;
+
+        const light = new BABYLON.HemisphericLight(
+          "light",
+          new BABYLON.Vector3(0.4, 1, 0.6),
+          scene,
+        );
+        light.intensity = 1.2;
+
+        const pointLight = new BABYLON.PointLight(
+          "pointLight",
+          new BABYLON.Vector3(-2, 3, -2),
+          scene,
+        );
+        pointLight.diffuse = new BABYLON.Color3(0.7, 0.6, 1);
+        pointLight.intensity = 0.9;
+
+        const ground = BABYLON.MeshBuilder.CreateGround(
+          "ground",
+          { width: 10, height: 10 },
+          scene,
+        );
+        ground.position.y = -0.75;
+        ground.receiveShadows = true;
+        const groundMat = new BABYLON.StandardMaterial("groundMat", scene);
+        groundMat.diffuseColor = new BABYLON.Color3(0.06, 0.07, 0.12);
+        groundMat.specularColor = BABYLON.Color3.Black();
+        ground.material = groundMat;
+
+        const shadowGenerator = new BABYLON.ShadowGenerator(2048, pointLight);
+        shadowGenerator.useBlurExponentialShadowMap = true;
+        shadowGenerator.blurKernel = 16;
+
+        const foundation = BABYLON.MeshBuilder.CreateBox(
+          "foundation",
+          { width: 3.6, height: 0.3, depth: 3.6 },
+          scene,
+        );
+        foundation.material = new BABYLON.StandardMaterial(
+          "foundationMat",
+          scene,
+        );
+        foundation.material.diffuseColor = new BABYLON.Color3(0.13, 0.15, 0.25);
+        foundation.material.emissiveColor = new BABYLON.Color3(
+          0.05,
+          0.07,
+          0.18,
+        );
+        foundation.position.y = -0.6;
+        shadowGenerator.addShadowCaster(foundation);
+
+        const tower = BABYLON.MeshBuilder.CreateCylinder(
+          "tower",
+          {
+            diameterTop: 0.9,
+            diameterBottom: 1.3,
+            height: 2.6,
+            tessellation: 32,
+          },
+          scene,
+        );
+        tower.position.y = 1.1;
+        const towerMat = new BABYLON.StandardMaterial("towerMat", scene);
+        towerMat.diffuseColor = new BABYLON.Color3(0.34, 0.52, 0.96);
+        towerMat.emissiveColor = new BABYLON.Color3(0.06, 0.12, 0.45);
+        tower.material = towerMat;
+        shadowGenerator.addShadowCaster(tower);
+
+        const halo = BABYLON.MeshBuilder.CreateTorus(
+          "halo",
+          { diameter: 2.4, thickness: 0.2, tessellation: 48 },
+          scene,
+        );
+        halo.position.y = 1.6;
+        const haloMat = new BABYLON.StandardMaterial("haloMat", scene);
+        haloMat.diffuseColor = new BABYLON.Color3(0.96, 0.53, 0.83);
+        haloMat.emissiveColor = new BABYLON.Color3(0.55, 0.25, 0.6);
+        halo.material = haloMat;
+        shadowGenerator.addShadowCaster(halo);
+
+        const orb = BABYLON.MeshBuilder.CreateSphere(
+          "orb",
+          { diameter: 0.8, segments: 32 },
+          scene,
+        );
+        orb.position = new BABYLON.Vector3(0, 2.35, 0);
+        const orbMat = new BABYLON.StandardMaterial("orbMat", scene);
+        orbMat.diffuseColor = new BABYLON.Color3(0.9, 0.9, 1);
+        orbMat.emissiveColor = new BABYLON.Color3(0.35, 0.45, 0.9);
+        orb.material = orbMat;
+        shadowGenerator.addShadowCaster(orb);
+
+        const glow = new BABYLON.GlowLayer("glow", scene, {
+          blurKernelSize: 24,
+        });
+        glow.intensity = 0.5;
+        glow.addIncludedOnlyMesh(halo);
+        glow.addIncludedOnlyMesh(orb);
+
+        let t = 0;
+
+        scene.registerBeforeRender(() => {
+          const delta = scene.getEngine().getDeltaTime() * 0.001;
+          t += delta;
+          halo.rotation.x += 0.01;
+          halo.rotation.z += 0.006;
+          tower.rotation.y += 0.005;
+          orb.position.y = 2.35 + Math.sin(t) * 0.1;
+        });
+
+        return scene;
+      };
+
+      const scene = createScene();
+      engine.runRenderLoop(() => {
+        scene.render();
+      });
+
+      window.addEventListener("resize", () => {
+        engine.resize();
+      });
+    </script>
+  </body>
+</html>
